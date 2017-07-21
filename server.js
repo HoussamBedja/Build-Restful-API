@@ -12,14 +12,15 @@ app.use(bodyParser.json());
 
 var port = process.env.PORT || 8080;
 
+
 var mongoose   = require('mongoose');
-mongoose.connect('mongodb://node:node@novus.modulusmongo.net:27017/Iganiq8o'); // connect to the database
+mongoose.connect('mongodb://node:node@novus.modulusmongo.net:27017/Iganiq8o'); // connect to our database
 
 // ROUTES FOR THE API
 var router = express.Router(); // get an instance of the express Router
 
 // Route Middleware
-route.use(function(req, res, next){
+router.use(function(req, res, next){
 	console.log('Something is happening');
 	next();
 }); 
@@ -29,6 +30,28 @@ router.get('/', function(req, res) {
     res.json({ message: 'hooray! welcome to our api!' }); 
 
 });
+
+router.route('/bears')
+	.post(function(req, res){
+		var bear = new Bear();
+		bear.name = req.body.name;
+
+		bear.save(function(err){
+			if (err) {
+				res.send(err);
+			}
+			res.json({ message: 'Bear created!' }); 
+		});
+	})
+	//Get all the bears
+	.get(function(req, res) {
+        Bear.find(function(err, bears) {
+            if (err)
+                res.send(err);
+
+            res.json(bears);
+        });
+    });
 
 
 // REGISTER THE ROUTES
